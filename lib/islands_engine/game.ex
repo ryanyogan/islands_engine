@@ -6,7 +6,7 @@ defmodule IslandsEngine.Game do
   @players [:player1, :player2]
 
   def start_link(name) when is_binary(name) do
-    GenServer.start_link(__MODULE__, name, [])
+    GenServer.start_link(__MODULE__, name, name: via_tuple(name))
   end
 
   def add_player(game, name) when is_binary(name) do
@@ -114,6 +114,9 @@ defmodule IslandsEngine.Game do
         {:reply, {:error, :invalid_coordinate}, state}
     end
   end
+
+  def via_tuple(name),
+    do: {:via, Registry, {Registry.Game, name}}
 
   defp update_player2_name(state, name),
     do: put_in(state.player2.name, name)
